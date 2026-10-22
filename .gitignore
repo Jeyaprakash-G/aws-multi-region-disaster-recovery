@@ -1,0 +1,22 @@
+# Python cache files
+
+**pycache**/
+*.py[cod]
+
+# Virtual environments
+
+venv/
+.venv/
+
+# Environment variables
+
+.env
+
+# Private keys
+
+*.pem
+*.key
+
+# Log files
+
+*.log
