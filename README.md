@@ -57,89 +57,46 @@ The project demonstrates how AWS networking and storage services can work togeth
 
 Important: Transit Gateway peering provides the network path between the VPCs. S3 Cross-Region Replication is a separate S3-managed data replication process.
 
-🛠️ AWS Services and Tools
+## 🛠️ AWS Services and Tools
 
-Service / Tool
+| Service / Tool | Purpose |
+|---|---|
+| **Amazon VPC** | Provides isolated networking in each AWS Region. |
+| **Public Subnets** | Host project resources according to the implemented lab design. |
+| **Internet Gateway** | Provides internet connectivity for resources and routes configured to use it. |
+| **Amazon EC2 (Ubuntu)** | Runs the file-monitoring and S3 upload scripts. |
+| **Amazon EFS** | Provides shared file storage mounted at `/mnt/efs`. |
+| **EFS Mount Target** | Provides network access to EFS from the VPC. |
+| **AWS Transit Gateway** | Connects VPCs to the regional transit network. |
+| **Transit Gateway Inter-Region Peering** | Connects the Transit Gateways in different AWS Regions. |
+| **Amazon S3** | Stores uploaded files in the primary AWS Region. |
+| **S3 Cross-Region Replication (CRR)** | Replicates eligible objects from the primary S3 bucket to the DR bucket. |
+| **`inotifywait`** | Detects file-system events, such as file creation and modification. |
+| **AWS CLI** | Lists and verifies S3 objects from the command line. |
+| **Bash** | Executes the `efs-to-s3.sh` file-upload script. |
 
-Purpose
+## 🌐 Regional Network Configuration
 
-Amazon VPC
+### 🇺🇸 Primary Region — US East (N. Virginia)
 
-Provides isolated networking in each Region
+| Configuration | Details |
+|---|---|
+| **AWS Region** | `us-east-1` |
+| **VPC CIDR** | `10.0.0.0/16` |
+| **Public Subnet CIDR** | `10.0.1.0/24` |
+| **Storage** | Amazon EFS and primary S3 bucket |
+| **Primary S3 Bucket** | `jp-s3-n.virginia` |
 
-Public Subnets
+### 🇸🇬 DR / Secondary Region — Singapore
 
-Host the project resources according to the implemented lab design
+| Configuration | Details |
+|---|---|
+| **AWS Region** | `ap-southeast-1` |
+| **VPC CIDR** | `10.1.0.0/16` |
+| **Public Subnet CIDR** | `10.1.1.0/24` |
+| **Compute** | Ubuntu EC2 instance |
+| **DR S3 Bucket** | `jp-s3-oct2` |
 
-Internet Gateway
-
-Provides internet connectivity for resources/routes configured to use it
-
-Amazon EC2 (Ubuntu)
-
-Runs the file-monitoring and S3 upload scripts
-
-Amazon EFS
-
-Provides shared file storage mounted at /mnt/efs
-
-EFS Mount Target
-
-Provides network access to EFS from the VPC
-
-AWS Transit Gateway
-
-Connects VPCs to the regional transit network
-
-Transit Gateway Inter-Region Peering
-
-Connects the regional Transit Gateways
-
-Amazon S3
-
-Stores uploaded files in the primary Region
-
-S3 Cross-Region Replication
-
-Replicates eligible objects to the DR bucket
-
-inotifywait
-
-Detects file-system events such as file creation and modification
-
-AWS CLI
-
-Lists and verifies S3 objects from the command line
-
-Bash
-
-Runs the efs-to-s3.sh upload script
-
-🌐 Regional Network Configuration
-
-Primary Region — US East (N. Virginia)
-
-Region: us-east-1
-
-VPC CIDR: 10.0.0.0/16
-
-Public subnet CIDR: 10.0.1.0/24
-
-Storage: Amazon EFS and primary S3 bucket
-
-Primary S3 bucket: jp-s3-n.virginia
-
-DR / Secondary Region — Singapore
-
-Region: ap-southeast-1
-
-VPC CIDR: 10.1.0.0/16
-
-Public subnet CIDR: 10.1.1.0/24
-
-Compute: Ubuntu EC2 instance
-
-DR S3 bucket: jp-s3-oct2
 
 Transit Gateway connectivity
 
