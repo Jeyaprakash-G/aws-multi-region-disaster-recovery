@@ -1,14 +1,18 @@
-# Designing Resilient, Private Cross-Region Storage & Network Connectivity for a Global Enterprise
+# 🌎 Designing Resilient, Private Cross-Region Storage & Network Connectivity for a Global Enterprise
 
-AWS multi-region disaster recovery architecture using Amazon EFS, Transit Gateway inter-region peering, and S3 Cross-Region Replication.
+An AWS multi-region disaster recovery architecture using **Amazon EFS, AWS Transit Gateway Inter-Region Peering, and Amazon S3 Cross-Region Replication (CRR)**.
 
-🌎 AWS Multi-Region Disaster Recovery
+## 🚀 AWS Multi-Region Disaster Recovery
 
-Amazon EFS | Transit Gateway Inter-Region Peering | Amazon S3 Cross-Region Replication
+**Technologies:** Amazon EFS | AWS Transit Gateway | Amazon S3 Cross-Region Replication
 
-A hands-on AWS infrastructure project demonstrating cross-region connectivity, shared file storage, automated file monitoring, and Amazon S3 Cross-Region Replication (CRR).
+### 📌 Project Overview
 
-This project connects an Amazon EC2 instance in Singapore (ap-southeast-1) to Amazon EFS in US East (N. Virginia, us-east-1) through AWS Transit Gateway inter-Region peering. Files created in the mounted EFS file system are detected on the EC2 instance, uploaded to a primary S3 bucket in N. Virginia, and replicated to a DR S3 bucket in Singapore.
+A hands-on AWS infrastructure project demonstrating cross-region network connectivity, shared file storage, automated file monitoring, and Amazon S3 Cross-Region Replication (CRR).
+
+This project connects an **Amazon EC2 instance in Singapore (`ap-southeast-1`)** to **Amazon EFS in US East (N. Virginia, `us-east-1`)** through AWS Transit Gateway Inter-Region Peering.
+
+Files created in the mounted EFS file system are detected by the EC2 instance, uploaded to the primary S3 bucket in N. Virginia, and replicated to the DR S3 bucket in Singapore.
 
 🚀 Project Overview
 
