@@ -117,35 +117,38 @@ Important: Transit Gateway peering provides the network path between the VPCs. S
 - Ensure that the required VPC and Transit Gateway routes are configured for the intended network path.
 - Verify that the network configuration supports connectivity between the EC2 instance and the EFS mount target.
 
-📁 EFS Mount and File Monitoring
+## 📁 EFS Mount and File Monitoring
 
-The EFS file system is mounted on the Ubuntu EC2 instance at:
+The Amazon EFS file system is mounted on the Ubuntu EC2 instance at:
 
 `/mnt/efs`
 
-The lab uses inotifywait to detect file-system activity and a Bash script (efs-to-s3.sh) to upload the detected file to the primary S3 bucket.
+The lab uses `inotifywait` to detect file-system activity and a Bash script (`efs-to-s3.sh`) to upload detected files to the primary S3 bucket.
 
-Workflow
+### 🔄 File Monitoring Workflow
 
 1. Create or modify a file under `/mnt/efs`.
-2. `inotifywait` detects the configured event.
+2. `inotifywait` detects the configured file-system event.
 3. The monitoring workflow invokes `efs-to-s3.sh`.
 4. The script uploads the file to `jp-s3-n.virginia`.
-5. S3 Cross-Region Replication copies eligible objects to `jp-s3-oct2`.
+5. Amazon S3 Cross-Region Replication (CRR) copies eligible objects to `jp-s3-oct2`.
 
-Event-based monitoring can detect changes without waiting for a periodic cron interval. The monitoring process must be running for events to be handled.
+**Note:** Event-based monitoring detects file-system changes without waiting for a periodic cron interval. The monitoring process must be running for events to be handled.
 
-🪣 Amazon S3 Cross-Region Replication
+## 🪣 Amazon S3 Cross-Region Replication
 
-Replication direction
+### 🔄 Replication Direction
+
+The replication flow is from the primary S3 bucket in US East (N. Virginia) to the DR S3 bucket in Singapore.
 
 ```text
-Primary S3 bucket: jp-s3-n.virginia (us-east-1)
-        │
-        │ S3 Cross-Region Replication
-        ▼
-DR S3 bucket: jp-s3-oct2 (ap-southeast-1)
-```
+Primary S3 Bucket
+jp-s3-n.virginia (us-east-1)
+        |
+        | S3 Cross-Region Replication (CRR)
+        v
+DR S3 Bucket
+jp-s3-oct2 (ap-southeast-1)
 
 Configuration checklist
 
