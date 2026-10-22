@@ -16,7 +16,7 @@ An **Amazon EC2 instance in Singapore (`ap-southeast-1`)** connects to **Amazon 
 
 Files created in the mounted EFS file system are detected by the EC2 instance, uploaded to the primary S3 bucket in N. Virginia, and replicated to the DR S3 bucket in Singapore.
 
-🎯 Objectives
+### 🎯 Objectives
 
 - Configure VPC networking in two AWS Regions.
 - Attach each VPC to its regional AWS Transit Gateway.
@@ -27,7 +27,7 @@ Files created in the mounted EFS file system are detected by the EC2 instance, u
 - Configure S3 Cross-Region Replication from N. Virginia to Singapore.
 - Verify that files reach both the primary and DR S3 buckets.
 
-🏗️ Architecture
+### 🏗️ Architecture
 
 ```
          PRIMARY REGION                              DR / SECONDARY REGION
@@ -61,44 +61,43 @@ Important: Transit Gateway peering provides the network path between the VPCs. S
 
 ## 🛠️ AWS Services and Tools
 
-| Service / Tool | Purpose |
-|---|---|
-| **Amazon VPC** | Provides isolated networking in each AWS Region. |
-| **Public Subnets** | Host project resources according to the implemented lab design. |
-| **Internet Gateway** | Provides internet connectivity for resources and routes configured to use it. |
-| **Amazon EC2 (Ubuntu)** | Runs the file-monitoring and S3 upload scripts. |
-| **Amazon EFS** | Provides shared file storage mounted at `/mnt/efs`. |
-| **EFS Mount Target** | Provides network access to EFS from the VPC. |
-| **AWS Transit Gateway** | Connects VPCs to the regional transit network. |
-| **Transit Gateway Inter-Region Peering** | Connects the Transit Gateways in different AWS Regions. |
-| **Amazon S3** | Stores uploaded files in the primary AWS Region. |
-| **S3 Cross-Region Replication (CRR)** | Replicates eligible objects from the primary S3 bucket to the DR bucket. |
-| **`inotifywait`** | Detects file-system events, such as file creation and modification. |
-| **AWS CLI** | Lists and verifies S3 objects from the command line. |
-| **Bash** | Executes the `efs-to-s3.sh` file-upload script. |
+| **Service / Tool**                       | **Purpose**                                                                   |
+| ---------------------------------------- | ----------------------------------------------------------------------------- |
+| **Amazon VPC**                           | Provides isolated networking in each AWS Region.                              |
+| **Public Subnets**                       | Host project resources according to the implemented lab design.               |
+| **Internet Gateway**                     | Provides internet connectivity for resources and routes configured to use it. |
+| **Amazon EC2 (Ubuntu)**                  | Runs the file-monitoring and S3 upload scripts.                               |
+| **Amazon EFS**                           | Provides shared file storage mounted at `/mnt/efs`.                           |
+| **EFS Mount Target**                     | Provides network access to EFS from the VPC.                                  |
+| **AWS Transit Gateway**                  | Connects VPCs to the regional transit network.                                |
+| **Transit Gateway Inter-Region Peering** | Connects the Transit Gateways in different AWS Regions.                       |
+| **Amazon S3**                            | Stores uploaded files in the primary AWS Region.                              |
+| **S3 Cross-Region Replication (CRR)**    | Replicates eligible objects from the primary S3 bucket to the DR bucket.      |
+| **`inotifywait`**                        | Detects file-system events, such as file creation and modification.           |
+| **AWS CLI**                              | Lists and verifies S3 objects from the command line.                          |
+| **Bash**                                 | Executes the `efs-to-s3.sh` file-upload script.                               |
 
 ## 🌐 Regional Network Configuration
 
 ### 🇺🇸 Primary Region — US East (N. Virginia)
 
-| Configuration | Details |
-|---|---|
-| **AWS Region** | `us-east-1` |
-| **VPC CIDR** | `10.0.0.0/16` |
-| **Public Subnet CIDR** | `10.0.1.0/24` |
-| **Storage** | Amazon EFS and primary S3 bucket |
-| **Primary S3 Bucket** | `jp-s3-n.virginia` |
+| **Configuration**      | **Details**                      |
+| ---------------------- | -------------------------------- |
+| **AWS Region**         | `us-east-1`                      |
+| **VPC CIDR**           | `10.0.0.0/16`                    |
+| **Public Subnet CIDR** | `10.0.1.0/24`                    |
+| **Storage**            | Amazon EFS and primary S3 bucket |
+| **Primary S3 Bucket**  | `jp-s3-n.virginia`               |
 
 ### 🇸🇬 DR / Secondary Region — Singapore
 
-| Configuration | Details |
-|---|---|
-| **AWS Region** | `ap-southeast-1` |
-| **VPC CIDR** | `10.1.0.0/16` |
-| **Public Subnet CIDR** | `10.1.1.0/24` |
-| **Compute** | Ubuntu EC2 instance |
-| **DR S3 Bucket** | `jp-s3-oct2` |
-
+| **Configuration**      | **Details**         |
+| ---------------------- | ------------------- |
+| **AWS Region**         | `ap-southeast-1`    |
+| **VPC CIDR**           | `10.1.0.0/16`       |
+| **Public Subnet CIDR** | `10.1.1.0/24`       |
+| **Compute**            | Ubuntu EC2 instance |
+| **DR S3 Bucket**       | `jp-s3-oct2`        |
 
 ### 🌐 Transit Gateway Inter-Region Peering Configuration
 
@@ -141,7 +140,7 @@ The lab uses `inotifywait` to detect file-system activity and a Bash script (`ef
 
 The replication flow is from the primary S3 bucket in US East (N. Virginia) to the DR S3 bucket in Singapore.
 
-```text
+````
 Primary S3 Bucket
 jp-s3-n.virginia (us-east-1)
         |
@@ -166,35 +165,29 @@ S3 replication applies to objects covered by the configured rule. Objects that e
 
 Use the commands below on the Ubuntu EC2 instance where applicable.
 
-1. **Verify the EFS mount**
+### 1. Verify the EFS Mount
 
    ```bash
    df -h | grep /mnt/efs
-   ```
 
-2. **Test NFS connectivity to the EFS mount target**
+````
+
+### 2. Test NFS Connectivity to the EFS Mount Target
 
    Replace the example IP with the mount target IP for your environment:
-
-   ```bash
+   ```
    nc -vz 10.0.1.164 2049
    ```
-
-3. **Create a test file**
-
-   ```bash
+### 3. Create a Test File
+   ```
    echo "Multi-region EFS and S3 replication test" | sudo tee /mnt/efs/replication-test.txt
    ```
-
-4. **Check the primary S3 bucket**
-
-   ```bash
+### 4. Check the Primary S3 Bucket
+   ```
    aws s3 ls s3://jp-s3-n.virginia/
    ```
-
-5. **Check the DR S3 bucket**
-
-   ```bash
+### 5. Check the DR S3 Bucket
+   ```
    aws s3 ls s3://jp-s3-oct2/ --region ap-southeast-1
    ```
 
@@ -228,7 +221,7 @@ Replication is asynchronous, so the destination object may not appear immediatel
 
 📂 Suggested Repository Structure
 
-```text
+```
 aws-multi-region-disaster-recovery/
 ├── README.md
 ├── scripts/
@@ -236,6 +229,7 @@ aws-multi-region-disaster-recovery/
 ├── docs/
 │   └── architecture.png
 └── .gitignore
+
 ```
 
 🎓 Key Learning Outcomes
