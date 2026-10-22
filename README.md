@@ -100,17 +100,22 @@ Important: Transit Gateway peering provides the network path between the VPCs. S
 | **DR S3 Bucket** | `jp-s3-oct2` |
 
 
-Transit Gateway connectivity
+### 🌐 Transit Gateway Inter-Region Peering Configuration
 
-1. Create a Transit Gateway in each Region.
-2. Attach the regional VPC to its Transit Gateway.
+1. Create an AWS Transit Gateway in each Region.
+2. Attach the regional VPC to its respective Transit Gateway.
 3. Create a Transit Gateway peering attachment between the two Regions.
 4. Accept the peering request in the peer Region.
-5. Configure the required Transit Gateway route-table associations and propagations.
-6. Add routes for the opposite VPC CIDR through the peering attachment.
-7. Verify the network path and security rules.
+5. Configure the required Transit Gateway route table associations and route propagations.
+6. Add routes for the remote VPC CIDR through the Transit Gateway peering attachment.
+7. Verify network connectivity and security group rules.
 
-EFS network requirement: Allow NFS traffic on TCP port 2049 from the authorized EC2/security-group or network source. Configure routes and security rules to match the actual VPC and EFS mount-target design.
+### 🔐 EFS Network Connectivity Requirements
+
+- Allow NFS traffic over TCP port `2049` from authorized sources.
+- Configure the appropriate security group rules for the EC2 instance and EFS mount targets.
+- Ensure that the required VPC and Transit Gateway routes are configured for the intended network path.
+- Verify that the network configuration supports connectivity between the EC2 instance and the EFS mount target.
 
 📁 EFS Mount and File Monitoring
 
